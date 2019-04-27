@@ -1,7 +1,3 @@
-/**
- * @author TJaiswal
- * @mail tarunjaiswal92@gmail.com
- */
 package naveenLabMMTAssignment.com.naveenLabMMTAssignment.pageobject;
 
 import naveenLabMMTAssignment.com.naveenLabMMTAssignment.testbase.*;
@@ -19,6 +15,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+/**
+ * 
+ * @author TJaiswal
+ * @mail tarunjaiswal92@gmail.com
+ */
 
 public class FlightBooked extends TestBase {
 	public WebDriver driver;
@@ -75,6 +77,10 @@ public class FlightBooked extends TestBase {
 		PageFactory.initElements(driver, this);
 	}
 
+	/**
+	 * This method is used for search flight and fliter based on the stop, non stop
+	 * @throws InterruptedException
+	 */
 	public void bookedTickets() throws InterruptedException {
 		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 		Thread.sleep(3000);
@@ -104,6 +110,9 @@ public class FlightBooked extends TestBase {
 
 	}
 
+	/**
+	 * specific search flight only
+	 */
 	public void searchFlight() {
 		try {
 			searchBtn.click();
@@ -113,6 +122,9 @@ public class FlightBooked extends TestBase {
 		}
 	}
 
+	/**
+	 * this method is used for select today for departure
+	 */
 	public void departureFilghtDate() {
 		List<WebElement> allDays = driver.findElements(By.className("DayPicker-Day"));
 		for (int dayIndex = 0; dayIndex < allDays.size(); dayIndex++) {
@@ -136,6 +148,9 @@ public class FlightBooked extends TestBase {
 		}
 	}
 
+	/**
+	 * This method is used for select return flight date for after 7 days
+	 */
 	public void returnFlightDate() {
 		List<WebElement> allDays = driver.findElements(By.className("DayPicker-Day"));
 
@@ -160,6 +175,11 @@ public class FlightBooked extends TestBase {
 
 	}
 
+	/**
+	 * This method is used for if server is down or some other reason is working then showing
+	 * some message to user
+	 * @return
+	 */
 	private boolean errorPage() {
 		try {
 			String errorPageMsg = "";
@@ -176,6 +196,10 @@ public class FlightBooked extends TestBase {
 		return false;
 	}
 
+	/**
+	 * This method is used for select filter for non stop and stop flight for departure and return
+	 * @throws InterruptedException
+	 */
 	private void selectFliterNonAndStopFlight() throws InterruptedException {
 		try {
 			nonStopFlight.click();
@@ -188,16 +212,28 @@ public class FlightBooked extends TestBase {
 		}
 	}
 
+	/**
+	 * This method is used for total number of departure flight are non stop and stop
+	 * @return 
+	 */
 	public int totalNonAndStopDepartureFlights() {
 		int totalnonAndstopFlights = totalDepFlights();
 		return totalnonAndstopFlights;
 	}
 
+	/**
+	 * This method is used for total number of return flight are non stop and stop
+	 * @return
+	 */
 	public int totalNonAndStopReturnFlights() {
 		int totalnonAndstopReturnFlights = totalReturnsFlights();
 		return totalnonAndstopReturnFlights;
 	}
 
+	/**
+	 * This method is used for total number of departure flight for defualt fliter selection
+	 * @return
+	 */
 	public int totalDepFlights() {
 		int allFlightsCount = 0;
 		// 1+ is added because we are not adding already selected flight
@@ -210,6 +246,10 @@ public class FlightBooked extends TestBase {
 		return allFlightsCount;
 	}
 
+	/**
+	 * This method is used for total number of return flight for defualt fliter selection
+	 * @return
+	 */
 	public int totalReturnsFlights() {
 		int allReturnFlightsCount = 0;
 		// 1+ is added because we are not adding already selected flight
@@ -222,6 +262,10 @@ public class FlightBooked extends TestBase {
 		return allReturnFlightsCount;
 	}
 
+	/**
+	 * This method is used for found out of first top 10 flight for departure side
+	 * @return
+	 */
 	private int firstTenSourceSideFlight() {
 		int totalToSideFlight = 0;
 		try {
@@ -239,6 +283,10 @@ public class FlightBooked extends TestBase {
 		return totalToSideFlight;
 	}
 
+	/**
+	 * This method is used for found out of first top 10 flight for return side
+	 * @return
+	 */
 	private int firstTenDestinationSideFlight() {
 		List<WebElement> topFlights = driver.findElements(returnflightRadioBtnInput);
 		int totalDestSideFlight = topFlights.size();
@@ -251,6 +299,10 @@ public class FlightBooked extends TestBase {
 		return totalDestSideFlight;
 	}
 
+	/**
+	 * This method is used for check flight availability for both side
+	 * @return
+	 */
 	public int checkTopFlightAvailabilityOnBothSide() {
 		int equalFlightOnBothSide = 0;
 		int firstTopFlightToSide = firstTenSourceSideFlight();
@@ -265,6 +317,11 @@ public class FlightBooked extends TestBase {
 		return equalFlightOnBothSide;
 	}
 
+	/**
+	 * This method is used for say about fare for source to destination station
+	 * @return
+	 * @throws NoSuchElementException
+	 */
 	public int getSourceSideFlightFare() throws NoSuchElementException {
 		String flightCost = toSideFligtCost.getText().trim();
 		flightCost = flightCost.replaceAll(",", "");
@@ -272,6 +329,11 @@ public class FlightBooked extends TestBase {
 		return flightFare;
 	}
 
+	/**
+	 * This method is used for say about fare for destination to source station
+	 * @return
+	 * @throws NoSuchElementException
+	 */
 	public int getDestSideFlightFare() throws NoSuchElementException {
 		String flightCost = returnSideFlightCost.getText().trim();
 		flightCost = flightCost.replaceAll(",", "");
@@ -279,6 +341,11 @@ public class FlightBooked extends TestBase {
 		return flightFare;
 	}
 
+	/**
+	 * This method is used for say total fare for round trip
+	 * @return
+	 * @throws NoSuchElementException
+	 */
 	public int getTotalBothSideFlightFare() throws NoSuchElementException {
 		String flightCost = splitTotalFare.getText().trim();
 		flightCost = flightCost.replaceAll(",", "");
@@ -286,6 +353,11 @@ public class FlightBooked extends TestBase {
 		return flightFare;
 	}
 
+	/**
+	 * This method is used for select one of flight in top 10 list
+	 * @param elementIndex
+	 * @throws InterruptedException
+	 */
 	public void selectTopFlights(int elementIndex) throws InterruptedException {
 		List<WebElement> toflightElement = driver.findElements(toflightRadioBtnInput);
 		List<WebElement> destFlightElement = driver.findElements(returnflightRadioBtnInput);

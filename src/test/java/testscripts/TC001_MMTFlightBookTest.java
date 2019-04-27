@@ -15,6 +15,9 @@ public class TC001_MMTFlightBookTest extends TestBase {
 
 	FlightBooked flightBooked;
 
+	/**
+	 * This method is used for initialization for browser session for perticular MMT site 
+	 */
 	@BeforeTest
 	public void setUp() {
 		Properties properties = getProp();
@@ -22,8 +25,12 @@ public class TC001_MMTFlightBookTest extends TestBase {
 		init(mmtURL);
 	}
 
+	/**
+	 * Test fot MMT flight search functionlity
+	 * @throws InterruptedException
+	 */
 	@Test
-	public void testMe() throws InterruptedException {
+	public void MMTflightSearchTest() throws InterruptedException {
 		flightBooked = new FlightBooked(driver);
 		flightBooked.bookedTickets();
 		try {
@@ -41,6 +48,9 @@ public class TC001_MMTFlightBookTest extends TestBase {
 		}
 	}
 
+	/**
+	 * Kill for browser session
+	 */
 	@AfterTest
 	public void tearDown() {
 		closeDriver();
