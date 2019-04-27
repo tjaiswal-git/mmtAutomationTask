@@ -26,7 +26,7 @@ public class TC001_MMTFlightBookTest extends TestBase {
 	}
 
 	/**
-	 * Test fot MMT flight search functionlity
+	 * Test for MMT flight search functionlity
 	 * @throws InterruptedException
 	 */
 	@Test
