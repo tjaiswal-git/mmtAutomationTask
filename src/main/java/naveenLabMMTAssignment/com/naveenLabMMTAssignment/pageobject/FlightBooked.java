@@ -78,7 +78,9 @@ public class FlightBooked extends TestBase {
 	}
 
 	/**
-	 * This method is used for search flight and fliter based on the stop, non stop
+	 * This method is used for search flight and fliter based on the stop, non
+	 * stop
+	 * 
 	 * @throws InterruptedException
 	 */
 	public void bookedTickets() throws InterruptedException {
@@ -150,34 +152,55 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for select return flight date for after 7 days
+	 * 
+	 * @throws InterruptedException
 	 */
-	public void returnFlightDate() {
+	public void returnFlightDate() throws InterruptedException {
 		List<WebElement> allDays = driver.findElements(By.className("DayPicker-Day"));
-
-		for (int dayIndex = 0; dayIndex < allDays.size(); dayIndex++) {
+		int whenEmptyDateBox = 0;
+		int savingState = 0;
+		int newIndex = 0;
+		label1: for (int dayIndex = 0; dayIndex < allDays.size(); dayIndex++) {
 			try {
 				System.out.println(allDays.get(dayIndex).getAttribute("aria-label"));
 				String datTxt = allDays.get(dayIndex).getAttribute("aria-label");
-				System.out.println(datTxt);
 				CommonUtility cUtility = new CommonUtility();
-				String todayday = cUtility.getTodayDate();
-				if (datTxt.trim().equals(todayday)) {
-					dayIndex = dayIndex + 7;
-					allDays.get(dayIndex).click();
+
+				String after7daysDate = cUtility.getAfter7daysDate();
+				if (datTxt.trim().equals(after7daysDate)) {
+					whenEmptyDateBox++;
+					savingState = dayIndex;
 					Thread.sleep(8000);
-					break;
+					break label1;
 				}
+				if (whenEmptyDateBox == 2)
+				//whenEmptyDateBox == 2 is checking because some time aria-label date is coming 2 times so we are selecting last one 
+
+				{
+					allDays.get(newIndex).click();
+					Thread.sleep(8000);
+					break label1;
+				}
+
 			} catch (Exception e) {
 				System.out.println("Exception block");
 			}
 
 		}
 
+		if (whenEmptyDateBox == 1)
+			//whenEmptyDateBox == 1 is checking because some time aria-label date is coming unique then directly click on saving state 
+		{
+			allDays.get(savingState).click();
+			Thread.sleep(8000);
+		}
+
 	}
 
 	/**
-	 * This method is used for if server is down or some other reason is working then showing
-	 * some message to user
+	 * This method is used for if server is down or some other reason is working
+	 * then showing some message to user
+	 * 
 	 * @return
 	 */
 	private boolean errorPage() {
@@ -197,7 +220,9 @@ public class FlightBooked extends TestBase {
 	}
 
 	/**
-	 * This method is used for select filter for non stop and stop flight for departure and return
+	 * This method is used for select filter for non stop and stop flight for
+	 * departure and return
+	 * 
 	 * @throws InterruptedException
 	 */
 	private void selectFliterNonAndStopFlight() throws InterruptedException {
@@ -213,8 +238,10 @@ public class FlightBooked extends TestBase {
 	}
 
 	/**
-	 * This method is used for total number of departure flight are non stop and stop
-	 * @return 
+	 * This method is used for total number of departure flight are non stop and
+	 * stop
+	 * 
+	 * @return
 	 */
 	public int totalNonAndStopDepartureFlights() {
 		int totalnonAndstopFlights = totalDepFlights();
@@ -222,7 +249,9 @@ public class FlightBooked extends TestBase {
 	}
 
 	/**
-	 * This method is used for total number of return flight are non stop and stop
+	 * This method is used for total number of return flight are non stop and
+	 * stop
+	 * 
 	 * @return
 	 */
 	public int totalNonAndStopReturnFlights() {
@@ -231,7 +260,9 @@ public class FlightBooked extends TestBase {
 	}
 
 	/**
-	 * This method is used for total number of departure flight for defualt fliter selection
+	 * This method is used for total number of departure flight for defualt
+	 * fliter selection
+	 * 
 	 * @return
 	 */
 	public int totalDepFlights() {
@@ -247,7 +278,9 @@ public class FlightBooked extends TestBase {
 	}
 
 	/**
-	 * This method is used for total number of return flight for defualt fliter selection
+	 * This method is used for total number of return flight for defualt fliter
+	 * selection
+	 * 
 	 * @return
 	 */
 	public int totalReturnsFlights() {
@@ -263,7 +296,9 @@ public class FlightBooked extends TestBase {
 	}
 
 	/**
-	 * This method is used for found out of first top 10 flight for departure side
+	 * This method is used for found out of first top 10 flight for departure
+	 * side
+	 * 
 	 * @return
 	 */
 	private int firstTenSourceSideFlight() {
@@ -285,6 +320,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for found out of first top 10 flight for return side
+	 * 
 	 * @return
 	 */
 	private int firstTenDestinationSideFlight() {
@@ -301,6 +337,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for check flight availability for both side
+	 * 
 	 * @return
 	 */
 	public int checkTopFlightAvailabilityOnBothSide() {
@@ -319,6 +356,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for say about fare for source to destination station
+	 * 
 	 * @return
 	 * @throws NoSuchElementException
 	 */
@@ -331,6 +369,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for say about fare for destination to source station
+	 * 
 	 * @return
 	 * @throws NoSuchElementException
 	 */
@@ -343,6 +382,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for say total fare for round trip
+	 * 
 	 * @return
 	 * @throws NoSuchElementException
 	 */
@@ -355,6 +395,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for select one of flight in top 10 list
+	 * 
 	 * @param elementIndex
 	 * @throws InterruptedException
 	 */
