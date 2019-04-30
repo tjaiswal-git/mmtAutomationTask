@@ -139,7 +139,7 @@ public class FlightBooked extends TestBase {
 
 				if (datTxt.trim().equals(todayday)) {
 					allDays.get(dayIndex).click();
-					Thread.sleep(8000);
+					Thread.sleep(2000);
 					break;
 				}
 
@@ -157,10 +157,7 @@ public class FlightBooked extends TestBase {
 	 */
 	public void returnFlightDate() throws InterruptedException {
 		List<WebElement> allDays = driver.findElements(By.className("DayPicker-Day"));
-		int whenEmptyDateBox = 0;
-		int savingState = 0;
-		int newIndex = 0;
-		label1: for (int dayIndex = 0; dayIndex < allDays.size(); dayIndex++) {
+		for (int dayIndex = 0; dayIndex < allDays.size(); dayIndex++) {
 			try {
 				System.out.println(allDays.get(dayIndex).getAttribute("aria-label"));
 				String datTxt = allDays.get(dayIndex).getAttribute("aria-label");
@@ -168,33 +165,15 @@ public class FlightBooked extends TestBase {
 
 				String after7daysDate = cUtility.getAfter7daysDate();
 				if (datTxt.trim().equals(after7daysDate)) {
-					whenEmptyDateBox++;
-					savingState = dayIndex;
-					Thread.sleep(8000);
-					break label1;
+					Thread.sleep(3000);
+					allDays.get(dayIndex).click();
+					break;
 				}
-				if (whenEmptyDateBox == 2)
-				//whenEmptyDateBox == 2 is checking because some time aria-label date is coming 2 times so we are selecting last one 
-
-				{
-					allDays.get(newIndex).click();
-					Thread.sleep(8000);
-					break label1;
-				}
-
 			} catch (Exception e) {
 				System.out.println("Exception block");
 			}
 
 		}
-
-		if (whenEmptyDateBox == 1)
-			//whenEmptyDateBox == 1 is checking because some time aria-label date is coming unique then directly click on saving state 
-		{
-			allDays.get(savingState).click();
-			Thread.sleep(8000);
-		}
-
 	}
 
 	/**
