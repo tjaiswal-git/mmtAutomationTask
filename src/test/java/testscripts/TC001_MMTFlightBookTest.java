@@ -50,7 +50,7 @@ public class TC001_MMTFlightBookTest extends TestBase {
 				int totalexpectedFare = flightBooked.getTotalBothSideFlightFare(elementIndex);
 				Assert.assertEquals(totalActaulFare, totalexpectedFare);
 			}
-		} catch (Exception e) {
+		} catch (Exception | AssertionError e) {
 			logger.info("while assertion getting unknown exception.." + e.getMessage());
 			e.printStackTrace();
 		}
