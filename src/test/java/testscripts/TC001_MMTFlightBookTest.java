@@ -42,10 +42,10 @@ public class TC001_MMTFlightBookTest extends TestBase {
 				flightBooked.selectTopFlights(elementIndex);
 				int sourceSideFare = flightBooked.getSourceSideFlightFare();
 				int destSideFare = flightBooked.getDestSideFlightFare();
-				System.out.println(
-						"SRC side flight cost " + sourceSideFare + " and flight number is "+elementIndex+" out of TOP 10 ");
-				System.out.println(
-						"DEST side flight cost " + destSideFare + " and flight number is "+elementIndex+" out of TOP 10 ");
+				System.out.println("SRC side flight cost " + sourceSideFare + " and flight number is " + elementIndex
+						+ " out of TOP 10 ");
+				System.out.println("DEST side flight cost " + destSideFare + " and flight number is " + elementIndex
+						+ " out of TOP 10 ");
 				int totalActaulFare = sourceSideFare + destSideFare;
 				int totalexpectedFare = flightBooked.getTotalBothSideFlightFare(elementIndex);
 				Assert.assertEquals(totalActaulFare, totalexpectedFare);
