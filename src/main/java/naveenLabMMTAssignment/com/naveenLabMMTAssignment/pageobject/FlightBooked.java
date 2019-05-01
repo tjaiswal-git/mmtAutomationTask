@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -45,12 +47,6 @@ public class FlightBooked extends TestBase {
 	@FindBy(xpath = "//p[@class='error-title']")
 	WebElement errorPage;
 
-	@FindBy(xpath = "//input[@name='splitowJourney']")
-	By totalDepartureFlights;
-
-	@FindBy(xpath = "//input[@name='splitrtJourney']")
-	By totalReturnFlights;
-
 	@FindBy(xpath = "//label[@for='filter_stop0']/span[1]/span[@class='check']")
 	WebElement nonStopFlight;
 
@@ -59,13 +55,7 @@ public class FlightBooked extends TestBase {
 
 	@FindBy(xpath = "//span[@class='splitVw-total-fare']")
 	WebElement splitTotalFare;
-
-	@FindBy(xpath = "//input[@name='splitowJourney']/parent::div/label/div/span[@class='splitVw-outer append_right9']")
-	By toflightRadioBtnInput;
-
-	@FindBy(xpath = "//input[@name='splitrtJourney']/parent::div/label/div/span[@class='splitVw-outer append_right9']")
-	By returnflightRadioBtnInput;
-
+	
 	@FindBy(xpath = "//div[@class='splitVw-footer-left ']/div/div/div[4]/p/span")
 	WebElement toSideFligtCost;
 
@@ -96,20 +86,71 @@ public class FlightBooked extends TestBase {
 		driver.switchTo().defaultContent();
 		Thread.sleep(3000);
 		returnFlightDate();
-
 		searchFlight();
+
 		if (errorPage()) {
 			System.out.println("Page is not loading or site in maintance");
 		} else {
 			System.out.println("Site is up and running keep patience");
-			logger.info("Total departure flight are for default fliter " + totalDepFlights());
-			logger.info("Total return flight are  for default fliter " + totalReturnsFlights());
 			System.out.println("Total departure flight are for default fliter " + totalDepFlights());
 			System.out.println("Total return flight are for default fliter " + totalReturnsFlights());
 			selectFliterNonAndStopFlight();
 
 		}
 
+	}
+
+	/**
+	 * This method is used for get total departure flight object in the page
+	 * 
+	 * @return
+	 * @throws InterruptedException
+	 */
+	private List<WebElement> getTotalDepartureFlightsElement() throws InterruptedException {
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+
+		List<WebElement> totalDepartureFlightsObject = null;
+		for (int second = 0;; second++) {
+			if (second >= 60) {
+				break;
+			}
+			js.executeScript("window.scrollBy(0,200)", ""); // y value '200' can
+															// be altered
+			Thread.sleep(1000);
+			totalDepartureFlightsObject = driver.findElements(By.xpath("//input[@name='splitowJourney']"));
+		}
+		totalDepartureFlightsObject = driver.findElements(By.xpath("//input[@name='splitowJourney']"));
+		return totalDepartureFlightsObject;
+	}
+
+	/**
+	 * This method is used for get total return flight object in the page
+	 * 
+	 * @return
+	 * @throws InterruptedException
+	 */
+	private List<WebElement> getTotalReturnFlightsElement() throws InterruptedException {
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+		List<WebElement> totalReturnFlightsObject = null;
+		for (int second = 0;; second++) {
+			if (second >= 60) {
+				js.executeScript("window.scrollTo(0, -document.body.scrollHeight)");
+				Thread.sleep(5000);
+				break;
+			}
+			Thread.sleep(1000);
+			totalReturnFlightsObject = driver.findElements(By.xpath("//input[@name='splitrtJourney']"));
+		}
+
+		return totalReturnFlightsObject;
+	}
+
+	/**
+	 * This method is used for scoll the page on to top
+	 */
+	private void scrollPage() {
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+		js.executeScript("window.scrollTo(0,0)");
 	}
 
 	/**
@@ -206,6 +247,7 @@ public class FlightBooked extends TestBase {
 	 */
 	private void selectFliterNonAndStopFlight() throws InterruptedException {
 		try {
+			scrollPage();
 			nonStopFlight.click();
 			Thread.sleep(2000);
 			midstopFlight.click();
@@ -221,8 +263,9 @@ public class FlightBooked extends TestBase {
 	 * stop
 	 * 
 	 * @return
+	 * @throws InterruptedException
 	 */
-	public int totalNonAndStopDepartureFlights() {
+	public int totalNonAndStopDepartureFlights() throws InterruptedException {
 		int totalnonAndstopFlights = totalDepFlights();
 		return totalnonAndstopFlights;
 	}
@@ -232,8 +275,9 @@ public class FlightBooked extends TestBase {
 	 * stop
 	 * 
 	 * @return
+	 * @throws InterruptedException
 	 */
-	public int totalNonAndStopReturnFlights() {
+	public int totalNonAndStopReturnFlights() throws InterruptedException {
 		int totalnonAndstopReturnFlights = totalReturnsFlights();
 		return totalnonAndstopReturnFlights;
 	}
@@ -243,12 +287,13 @@ public class FlightBooked extends TestBase {
 	 * fliter selection
 	 * 
 	 * @return
+	 * @throws InterruptedException
 	 */
-	public int totalDepFlights() {
+	public int totalDepFlights() throws InterruptedException {
 		int allFlightsCount = 0;
 		// 1+ is added because we are not adding already selected flight
 		try {
-			allFlightsCount = driver.findElements(totalDepartureFlights).size() + 1;
+			allFlightsCount = getTotalDepartureFlightsElement().size() + 1;
 
 		} catch (NoSuchElementException e) {
 			logger.info("No flight information is found..");
@@ -261,12 +306,13 @@ public class FlightBooked extends TestBase {
 	 * selection
 	 * 
 	 * @return
+	 * @throws InterruptedException
 	 */
-	public int totalReturnsFlights() {
+	public int totalReturnsFlights() throws InterruptedException {
 		int allReturnFlightsCount = 0;
 		// 1+ is added because we are not adding already selected flight
 		try {
-			allReturnFlightsCount = driver.findElements(totalReturnFlights).size() + 1;
+			allReturnFlightsCount = getTotalReturnFlightsElement().size() + 1;
 
 		} catch (NoSuchElementException e) {
 			logger.info("No flight information is found..");
@@ -281,9 +327,11 @@ public class FlightBooked extends TestBase {
 	 * @return
 	 */
 	private int firstTenSourceSideFlight() {
+		scrollPage();
 		int totalToSideFlight = 0;
 		try {
-			List<WebElement> topFlights = driver.findElements(toflightRadioBtnInput);
+			List<WebElement> topFlights = driver.findElements(By.xpath(
+					"//input[@name='splitowJourney']/parent::div/label/div/span[@class='splitVw-outer append_right9']"));
 			totalToSideFlight = topFlights.size();
 			if (totalToSideFlight > 10) {
 				logger.info("we found more then 10 flight ,, so only select first 10");
@@ -303,7 +351,9 @@ public class FlightBooked extends TestBase {
 	 * @return
 	 */
 	private int firstTenDestinationSideFlight() {
-		List<WebElement> topFlights = driver.findElements(returnflightRadioBtnInput);
+		scrollPage();
+		List<WebElement> topFlights = driver.findElements(By.xpath(
+				"//input[@name='splitrtJourney']/parent::div/label/div/span[@class='splitVw-outer append_right9']"));
 		int totalDestSideFlight = topFlights.size();
 		if (totalDestSideFlight > 10) {
 			logger.info("we found more then 10 flight ,, so only select first 10");
@@ -341,7 +391,7 @@ public class FlightBooked extends TestBase {
 	 */
 	public int getSourceSideFlightFare() throws NoSuchElementException {
 		String flightCost = toSideFligtCost.getText().trim();
-		flightCost = flightCost.replaceAll(",", "");
+		flightCost = flightCost.replaceAll("[[a-zA-Z]\\,]", "").trim();
 		int flightFare = Integer.parseInt(flightCost);
 		return flightFare;
 	}
@@ -354,7 +404,7 @@ public class FlightBooked extends TestBase {
 	 */
 	public int getDestSideFlightFare() throws NoSuchElementException {
 		String flightCost = returnSideFlightCost.getText().trim();
-		flightCost = flightCost.replaceAll(",", "");
+		flightCost = flightCost.replaceAll("[[a-zA-Z]\\,]", "").trim();
 		int flightFare = Integer.parseInt(flightCost);
 		return flightFare;
 	}
@@ -365,9 +415,11 @@ public class FlightBooked extends TestBase {
 	 * @return
 	 * @throws NoSuchElementException
 	 */
-	public int getTotalBothSideFlightFare() throws NoSuchElementException {
+	public int getTotalBothSideFlightFare(int indexOfTopFlight) throws NoSuchElementException {
 		String flightCost = splitTotalFare.getText().trim();
-		flightCost = flightCost.replaceAll(",", "");
+		flightCost = flightCost.replaceAll("[[a-zA-Z]\\,]", "").trim();
+		System.out.println("Round Trip Flight Cost " + flightCost + " Number of TOP Flight is " + indexOfTopFlight);
+		System.out.println("-------------------------------------------------------");
 		int flightFare = Integer.parseInt(flightCost);
 		return flightFare;
 	}
@@ -379,12 +431,16 @@ public class FlightBooked extends TestBase {
 	 * @throws InterruptedException
 	 */
 	public void selectTopFlights(int elementIndex) throws InterruptedException {
-		List<WebElement> toflightElement = driver.findElements(toflightRadioBtnInput);
-		List<WebElement> destFlightElement = driver.findElements(returnflightRadioBtnInput);
+		List<WebElement> toflightElement = driver.findElements(By.xpath(
+				"//input[@name='splitowJourney']/parent::div/label/div/span[@class='splitVw-outer append_right9']"));
+		List<WebElement> destFlightElement = driver.findElements(By.xpath(
+				"//input[@name='splitrtJourney']/parent::div/label/div/span[@class='splitVw-outer append_right9']"));
 
 		{
 			try {
 				Thread.sleep(3000);
+				scrollToElement();
+
 				toflightElement.get(elementIndex).click();
 				logger.info("selected the flight(source) in list of " + elementIndex);
 
@@ -395,6 +451,15 @@ public class FlightBooked extends TestBase {
 				logger.info("Not able to click for top flight ");
 			}
 		}
+	}
+
+	/**
+	 * This method is used for Scroll the page with specific height of scroll
+	 * bar
+	 */
+	private void scrollToElement() {
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+		js.executeScript("window.scrollBy(0,150)", "");
 	}
 
 }
