@@ -434,7 +434,7 @@ public class FlightBooked extends TestBase {
 			String discountValInStr = discountAvail.getText().trim();
 			discountValInStr = discountValInStr.replaceAll("[[a-zA-Z]\\,]", "").trim();
 			discountRs = Integer.parseInt(discountValInStr);
-			System.out.println("discount coupen is " + discountRs+ "Rs");
+			System.out.println("Discount coupen is " + discountRs+ "Rs");
 		}
 		int flightFare = Integer.parseInt(flightCost);
 		return flightFare + discountRs;
