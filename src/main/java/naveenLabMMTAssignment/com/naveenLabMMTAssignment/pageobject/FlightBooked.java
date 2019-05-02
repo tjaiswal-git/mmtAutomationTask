@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import javax.sound.midi.Synthesizer;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -55,12 +57,15 @@ public class FlightBooked extends TestBase {
 
 	@FindBy(xpath = "//span[@class='splitVw-total-fare']")
 	WebElement splitTotalFare;
-	
+
 	@FindBy(xpath = "//div[@class='splitVw-footer-left ']/div/div/div[4]/p/span")
 	WebElement toSideFligtCost;
 
 	@FindBy(xpath = "//div[@class='splitVw-footer-right ']/div/div/div[4]/p/span")
 	WebElement returnSideFlightCost;
+
+	@FindBy(xpath = "//p[@class='disc-applied']/span[2]")
+	WebElement discountAvail;
 
 	public FlightBooked(WebDriver driver) {
 		this.driver = driver;
@@ -336,6 +341,9 @@ public class FlightBooked extends TestBase {
 			if (totalToSideFlight > 10) {
 				logger.info("we found more then 10 flight ,, so only select first 10");
 				totalToSideFlight = 10;
+
+			} else if (totalToSideFlight == 10) {
+				logger.info("we found exact 10 flight ,, so only select all 10 flight");
 			} else {
 				logger.info("we are found flight less than top 10.. " + totalToSideFlight);
 			}
@@ -358,6 +366,8 @@ public class FlightBooked extends TestBase {
 		if (totalDestSideFlight > 10) {
 			logger.info("we found more then 10 flight ,, so only select first 10");
 			totalDestSideFlight = 10;
+		} else if (totalDestSideFlight == 10) {
+			logger.info("we found exact 10 flight ,, so only select all 10 flight");
 		} else {
 			logger.info("we are found flight less than top 10.. " + totalDestSideFlight);
 		}
@@ -414,14 +424,39 @@ public class FlightBooked extends TestBase {
 	 * 
 	 * @return
 	 * @throws NoSuchElementException
+	 * @throws InterruptedException
 	 */
-	public int getTotalBothSideFlightFare(int indexOfTopFlight) throws NoSuchElementException {
+	public int getTotalBothSideFlightFare() throws NoSuchElementException, InterruptedException {
 		String flightCost = splitTotalFare.getText().trim();
 		flightCost = flightCost.replaceAll("[[a-zA-Z]\\,]", "").trim();
-		System.out.println("Round Trip Flight Cost " + flightCost + " Number of TOP Flight is " + indexOfTopFlight);
-		System.out.println("-------------------------------------------------------");
+		int discountRs = 0;
+		if (checkDiscountIsAvail()) {
+			String discountValInStr = discountAvail.getText().trim();
+			discountValInStr = discountValInStr.replaceAll("[[a-zA-Z]\\,]", "").trim();
+			discountRs = Integer.parseInt(discountValInStr);
+			System.out.println("discount coupen is " + discountRs+ "Rs");
+		}
 		int flightFare = Integer.parseInt(flightCost);
-		return flightFare;
+		return flightFare + discountRs;
+	}
+
+	/**
+	 * This method is used for check for any discount coupen is avail or not
+	 * 
+	 * @return
+	 * @throws InterruptedException
+	 */
+	private boolean checkDiscountIsAvail() throws InterruptedException {
+		boolean status = false;
+		Thread.sleep(2000);
+		try {
+			if (discountAvail.isDisplayed()) {
+				status = true;
+			}
+		} catch (Exception e) {
+			return status;
+		}
+		return status;
 	}
 
 	/**
