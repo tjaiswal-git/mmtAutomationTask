@@ -67,10 +67,9 @@ public class FlightBooked extends TestBase {
 
 	@FindBy(xpath = "//p[@class='disc-applied']/span[2]")
 	WebElement discountAvail;
-	
+
 	@FindBy(xpath = "//a[@id='webklipper-publisher-widget-container-notification-close-div']")
 	WebElement notificationPopUp;
-	
 
 	public FlightBooked(WebDriver driver) {
 		this.driver = driver;
@@ -86,7 +85,7 @@ public class FlightBooked extends TestBase {
 	public void bookedTickets() throws InterruptedException {
 		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 		Thread.sleep(5000);
-		System.out.println("Notifcation popup status is "+checkNotificationPopupIsExistOrNot());
+		System.out.println("Notifcation popup status is " + checkNotificationPopupIsExistOrNot());
 		roundTripFlight.click();
 		logger.info("Round trip option is selected...");
 		departure.click();
@@ -97,7 +96,7 @@ public class FlightBooked extends TestBase {
 		driver.switchTo().defaultContent();
 		Thread.sleep(3000);
 		returnFlightDate();
-		
+
 		searchFlight();
 
 		if (errorPage()) {
@@ -111,26 +110,25 @@ public class FlightBooked extends TestBase {
 		}
 
 	}
-	
+
 	/**
 	 * In case have any offer notification item then we are following same thing
+	 * 
 	 * @return
 	 * @throws InterruptedException
 	 */
-	private boolean checkNotificationPopupIsExistOrNot() throws InterruptedException
-	{
+	private boolean checkNotificationPopupIsExistOrNot() throws InterruptedException {
 		boolean status = false;
 		driver.switchTo().frame(driver.findElement(By.id("webklipper-publisher-widget-container-notification-frame")));
 		System.out.println("changed frame");
 		Thread.sleep(3000);
-		try{
-		if(notificationPopUp.isDisplayed())
-		{Thread.sleep(3000);
-			notificationPopUp.click();
-			status = true;
-		}
-		}
-		catch (ElementClickInterceptedException e) {
+		try {
+			if (notificationPopUp.isDisplayed()) {
+				Thread.sleep(3000);
+				notificationPopUp.click();
+				status = true;
+			}
+		} catch (ElementClickInterceptedException e) {
 			notificationPopUp.click();
 		}
 		return status;
@@ -465,7 +463,7 @@ public class FlightBooked extends TestBase {
 			String discountValInStr = discountAvail.getText().trim();
 			discountValInStr = discountValInStr.replaceAll("[[a-zA-Z]\\,]", "").trim();
 			discountRs = Integer.parseInt(discountValInStr);
-			System.out.println("Discount coupen is " + discountRs+ "Rs");
+			System.out.println("Discount coupen is " + discountRs + "Rs");
 		}
 		int flightFare = Integer.parseInt(flightCost);
 		return flightFare + discountRs;
