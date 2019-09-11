@@ -1,28 +1,18 @@
 package naveenLabMMTAssignment.com.naveenLabMMTAssignment.pageobject;
 
-import naveenLabMMTAssignment.com.naveenLabMMTAssignment.testbase.*;
+import naveenLabMMTAssignment.com.naveenLabMMTAssignment.testbase.TestBase;
 import naveenLabMMTAssignment.com.naveenLabMMTAssignment.utility.CommonUtility;
+import org.apache.log4j.Logger;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import javax.sound.midi.Synthesizer;
-
-import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementClickInterceptedException;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-
 /**
- * 
+ *
  * @author TJaiswal
  * @mail tarunjaiswal92@gmail.com
  */
@@ -79,7 +69,7 @@ public class FlightBooked extends TestBase {
 	/**
 	 * This method is used for search flight and fliter based on the stop, non
 	 * stop
-	 * 
+	 *
 	 * @throws InterruptedException
 	 */
 	public void bookedTickets() throws InterruptedException {
@@ -113,30 +103,40 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * In case have any offer notification item then we are following same thing
-	 * 
+	 *
 	 * @return
 	 * @throws InterruptedException
 	 */
 	private boolean checkNotificationPopupIsExistOrNot() throws InterruptedException {
 		boolean status = false;
-		driver.switchTo().frame(driver.findElement(By.id("webklipper-publisher-widget-container-notification-frame")));
-		System.out.println("changed frame");
-		Thread.sleep(3000);
 		try {
-			if (notificationPopUp.isDisplayed()) {
-				Thread.sleep(3000);
-				notificationPopUp.click();
-				status = true;
+			if (driver.findElement(By.id("webklipper-publisher-widget-container-notification-frame")).isDisplayed()) {
+				System.out.println("frame element is found");
+				driver.switchTo().frame(driver.findElement(By.id("webklipper-publisher-widget-container-notification-frame")));
+				System.out.println("changed frame");
 			}
-		} catch (ElementClickInterceptedException e) {
-			notificationPopUp.click();
+			Thread.sleep(3000);
+
+			if (notificationPopUp.isDisplayed()) {
+				try {
+					Thread.sleep(3000);
+					notificationPopUp.click();
+					status = true;
+				} catch (ElementClickInterceptedException e) {
+					notificationPopUp.click();
+				}
+			}
 		}
-		return status;
+		catch (NoSuchElementException e)
+		{
+			logger.trace("No such element found..");
+		}
+		return  status;
 	}
 
 	/**
 	 * This method is used for get total departure flight object in the page
-	 * 
+	 *
 	 * @return
 	 * @throws InterruptedException
 	 */
@@ -149,7 +149,7 @@ public class FlightBooked extends TestBase {
 				break;
 			}
 			js.executeScript("window.scrollBy(0,200)", ""); // y value '200' can
-															// be altered
+			// be altered
 			Thread.sleep(1000);
 			totalDepartureFlightsObject = driver.findElements(By.xpath("//input[@name='splitowJourney']"));
 		}
@@ -159,7 +159,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for get total return flight object in the page
-	 * 
+	 *
 	 * @return
 	 * @throws InterruptedException
 	 */
@@ -227,7 +227,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for select return flight date for after 7 days
-	 * 
+	 *
 	 * @throws InterruptedException
 	 */
 	public void returnFlightDate() throws InterruptedException {
@@ -254,7 +254,7 @@ public class FlightBooked extends TestBase {
 	/**
 	 * This method is used for if server is down or some other reason is working
 	 * then showing some message to user
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean errorPage() {
@@ -276,7 +276,7 @@ public class FlightBooked extends TestBase {
 	/**
 	 * This method is used for select filter for non stop and stop flight for
 	 * departure and return
-	 * 
+	 *
 	 * @throws InterruptedException
 	 */
 	private void selectFliterNonAndStopFlight() throws InterruptedException {
@@ -295,7 +295,7 @@ public class FlightBooked extends TestBase {
 	/**
 	 * This method is used for total number of departure flight are non stop and
 	 * stop
-	 * 
+	 *
 	 * @return
 	 * @throws InterruptedException
 	 */
@@ -307,7 +307,7 @@ public class FlightBooked extends TestBase {
 	/**
 	 * This method is used for total number of return flight are non stop and
 	 * stop
-	 * 
+	 *
 	 * @return
 	 * @throws InterruptedException
 	 */
@@ -319,7 +319,7 @@ public class FlightBooked extends TestBase {
 	/**
 	 * This method is used for total number of departure flight for defualt
 	 * fliter selection
-	 * 
+	 *
 	 * @return
 	 * @throws InterruptedException
 	 */
@@ -338,7 +338,7 @@ public class FlightBooked extends TestBase {
 	/**
 	 * This method is used for total number of return flight for defualt fliter
 	 * selection
-	 * 
+	 *
 	 * @return
 	 * @throws InterruptedException
 	 */
@@ -357,7 +357,7 @@ public class FlightBooked extends TestBase {
 	/**
 	 * This method is used for found out of first top 10 flight for departure
 	 * side
-	 * 
+	 *
 	 * @return
 	 */
 	private int firstTenSourceSideFlight() {
@@ -384,7 +384,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for found out of first top 10 flight for return side
-	 * 
+	 *
 	 * @return
 	 */
 	private int firstTenDestinationSideFlight() {
@@ -405,7 +405,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for check flight availability for both side
-	 * 
+	 *
 	 * @return
 	 */
 	public int checkTopFlightAvailabilityOnBothSide() {
@@ -424,7 +424,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for say about fare for source to destination station
-	 * 
+	 *
 	 * @return
 	 * @throws NoSuchElementException
 	 */
@@ -437,7 +437,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for say about fare for destination to source station
-	 * 
+	 *
 	 * @return
 	 * @throws NoSuchElementException
 	 */
@@ -450,7 +450,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for say total fare for round trip
-	 * 
+	 *
 	 * @return
 	 * @throws NoSuchElementException
 	 * @throws InterruptedException
@@ -471,7 +471,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for check for any discount coupen is avail or not
-	 * 
+	 *
 	 * @return
 	 * @throws InterruptedException
 	 */
@@ -490,7 +490,7 @@ public class FlightBooked extends TestBase {
 
 	/**
 	 * This method is used for select one of flight in top 10 list
-	 * 
+	 *
 	 * @param elementIndex
 	 * @throws InterruptedException
 	 */
